@@ -227,6 +227,25 @@ def get_gradient_theta (record, theta, t):
     #result[2] = numerator_Au.sum / float(denominator.sum)
     #result[3] = numerator_Bu.sum / float(denominator.sum)
     #return result
+
+def re_gradient(theta, gre_fun, record, t, n_iter = 50000, convergence = None, alpha = 0.005):
+    '''
+    compute gradient scent algorithm with convergence or iterate times
+    where gre_fun is function
+    theta are parameters
+    record are the listening series
+    t is how long of time series for traing you select
+    '''
+    gradient_theta = gre_fun(record, theta, t)
+    if convergence == None:
+        for _ in range(n_iter):
+            theta = theta + alpha * gradient_theta
+            gradient_theta = gre_fun(record, theta, t)
+    else:
+        while np.linalg.norm(gradient_theta) > convergence:
+            theta = theta + alpha * gradient_theta
+            gradient_theta = gre_fun(record, theta, t)
+    return theta
     
 
 
