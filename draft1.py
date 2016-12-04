@@ -279,6 +279,25 @@ def re_gradient(theta, gre_fun, record, t, n_iter = 50000, convergence = None, a
             gradient_theta = gre_fun(record, theta, t)
     return theta
 
+def predict(theta, x_list, seq):
+    '''
+    where theta is trained parameters
+    x_list is the item list
+    seq is previous listening record
+    '''
+    phi_u = theta[0]
+    Cu = theta[1]
+    Au = theta[2]
+    Bu = theta[3]
+    
+    prob = np.zeros(x_list.size)
+    
+    for i in range(x_list.size):
+        for k in range(seq.size):
+            xk = seq[t-k]
+            f_ut = get_f_ut(seq[:t-k], seq[t-k])
+            prob[i] += get_phi(Cu, Au, Bu, k) * get_gamma(phi_u, f_ut) * get_one_step_Prob(xk, x_list[i], seq)
+    return prob
 # In[ ]:
 
 
