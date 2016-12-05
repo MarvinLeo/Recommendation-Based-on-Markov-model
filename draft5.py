@@ -241,11 +241,14 @@ def predict(theta, x_list, seq):
 
 
 
-N = 5
+N = 2
 fileNames = glob.glob('*.csv')
+#fileNames = fileNames[:5]
 acu = np.zeros(len(fileNames))
+rank_list = np.zeros(len(fileNames))
 total = len(acu)
 index = 0
+theta1 = np.array([4.09, 1.0, 0.0])
 for files in fileNames:
     df = pd.read_csv(files)
     if df.shape[0] < 1200:
@@ -257,15 +260,20 @@ for files in fileNames:
     x_list = np.unique(record)
     aim = record[-1]
     record = record[:-1]
-    theta1 = np.array([4.09, 1.0, 0.0])
+
     prob = predict(theta1, x_list, record)
+    rank = np.argsort(prob)[::-1]
     top_N = np.argsort(prob)[::-1][:N]
     aim_index = np.where(x_list == aim)[0][0]
+    rank_n = np.where(rank == aim_index)[0][0]
+    rank_list[index] = rank_n + 1
     if aim_index in top_N:
         print "yes"
         acu[index] = 1
     else:
         print "No"
     index += 1
+rank_list = rank_list[:total]
 print sum(acu)/float(total)
+np.savetxt('rank_list.txt', rank_list, delimiter = ',')
 
