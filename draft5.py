@@ -241,13 +241,18 @@ def predict(theta, x_list, seq):
 
 
 
-N = 50
+N = 5
 fileNames = glob.glob('*.csv')
 acu = np.zeros(len(fileNames))
+total = len(acu)
 index = 0
 for files in fileNames:
     df = pd.read_csv(files)
-    record = df.item_index[range(df.item_index.size-1100,df.item_index.size-99)]
+    if df.shape[0] < 1200:
+        total -= 1 
+        continue
+    #record = df.item_index[range(df.item_index.size-1100,df.item_index.size-99)]
+    record = df.label6[range(df.item_index.size-1100,df.item_index.size-99)]
     record = record.as_matrix()
     x_list = np.unique(record)
     aim = record[-1]
@@ -262,4 +267,5 @@ for files in fileNames:
     else:
         print "No"
     index += 1
+print sum(acu)/float(total)
 
