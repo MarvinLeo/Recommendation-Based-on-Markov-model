@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[2]:
-
+import glob
 import numpy as np
 
 def get_phi (Cu, Au ,Bu, j, method = "logLinear"):
@@ -240,13 +240,26 @@ def predict(theta, x_list, seq):
     return prob
 
 
-# In[5]:
 
-print(predict(theta1, x_list, record))
-
-
-# In[ ]:
-
-theta = np.array([4, 0.5, 0.9])
-print(re_gradient(theta, sum_gradient, record, 100, alpha = 0.01))
+N = 50
+fileNames = glob.glob('*.csv')
+acu = np.zeros(len(fileNames))
+index = 0
+for files in fileNames:
+    df = pd.read_csv(files)
+    record = df.item_index[range(df.item_index.size-1100,df.item_index.size-99)]
+    record = record.as_matrix()
+    x_list = np.unique(record)
+    aim = record[-1]
+    record = record[:-1]
+    theta1 = np.array([4.09, 1.0, 0.0])
+    prob = predict(theta1, x_list, record)
+    top_N = np.argsort(prob)[::-1][:N]
+    aim_index = np.where(x_list == aim)[0][0]
+    if aim_index in top_N:
+        print "yes"
+        acu[index] = 1
+    else:
+        print "No"
+    index += 1
 
